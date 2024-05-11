@@ -11,7 +11,7 @@ Image Grid: Show a 3-column square image grid. The images should be center-cropp
 
 Image Loading:
 
-Implement asynchronous image loading using this url.
+Implement asynchronous image loading using this (https://acharyaprashant.org/api/v2/content/misc/media-coverages?limit=100) url.
 
 In the response of above API you will get thumbnail object in each array element. Use following formula to construct Image URL using fields of thumbnail object
 
