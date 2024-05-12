@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_start_end_margin">@dimen/_10sdp</dimen>
+    <dimen name="activity_vertical_start_end_margin">@dimen/_10sdp</dimen>
+
+    <!--TODO : COMMON DIMENS-->
+    <dimen name="button_text_size">@dimen/_15ssp</dimen>
+
+    <dimen name="header_font_size">@dimen/_15ssp</dimen>
+    <dimen name="edittext_radious">5dp</dimen>
+</resources>

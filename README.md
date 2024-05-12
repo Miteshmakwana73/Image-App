@@ -46,3 +46,4 @@ Push it on GitHub and share the link with us.
 **Submission deadline**
 Within 7 days from receiving the assignment.
 
+I have used Android Giraffe and compileSdk is 34.
