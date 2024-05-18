@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import android.os.Parcelable
+import kotlinx.coroutines.Job
+import kotlinx.parcelize.RawValue
 
 class ImageModel : ArrayList<ImageModel.ImageModelData>(){
     @Parcelize
@@ -27,7 +29,9 @@ class ImageModel : ArrayList<ImageModel.ImageModelData>(){
         val thumbnail: Thumbnail,
         @SerializedName("title")
         val title: String,
-        var localImage: Bitmap? = null
+        var localImage: Bitmap? = null,
+        var job: @RawValue Job? =null,
+        var getImage: Boolean = false,
     ) : Parcelable {
         @Parcelize
         data class BackupDetails(

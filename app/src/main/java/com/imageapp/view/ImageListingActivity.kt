@@ -2,11 +2,14 @@ package com.imageapp.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.view.View.OnScrollChangeListener
 import androidx.activity.viewModels
 import androidx.appcompat.widget.PopupMenu
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.imageapp.R
 import com.imageapp.core.BaseActivity
 import com.imageapp.databinding.ActivityImageListingBinding
@@ -25,6 +28,7 @@ import kotlinx.coroutines.cancel
 
 @AndroidEntryPoint
 class ImageListingActivity : BaseActivity() {
+    private val TAG = javaClass.simpleName
     private lateinit var coroutineScope: CoroutineScope
     private lateinit var binding: ActivityImageListingBinding
 
@@ -54,6 +58,37 @@ class ImageListingActivity : BaseActivity() {
                     }
                 }
             )
+
+            /*addOnScrollListener(object: RecyclerView.OnScrollListener(){
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                        val first = mGridLayoutManager.findFirstVisibleItemPosition()
+                        val last = mGridLayoutManager.findLastVisibleItemPosition()
+                        Log.e(TAG, "onScrolled: $first and $last")
+                        for (i in 0..first) {
+                            if (mList[i].job?.isActive == true) {
+                                mList[i].job?.cancel()
+                                mList[i].getImage = false
+                            }
+                        }
+
+//                        for (i in last..<mList.size) {
+//                            if (mList[i].job?.isActive == true) {
+//                                mList[i].job?.cancel()
+//                                mList[i].getImage = false
+//                            }
+//                        }
+
+                        for (i in first..last) {
+                            mList[i].getImage = true
+                            if(mList[i].job?.isCompleted == false) {
+                                binding.rvImages.adapter?.notifyItemChanged(i)
+                            }
+                        }
+
+                }
+
+            })*/
         }
 
         binding.imgMore.setOnClickListener {

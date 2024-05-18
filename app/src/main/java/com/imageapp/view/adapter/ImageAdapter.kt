@@ -16,7 +16,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedInputStream
-import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -30,11 +29,6 @@ class ImageAdapter(
     private val viewHolderClicks: ViewHolderClicks,
 ) : RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
 
-    // Cache directory
-    private val cacheDir: File = mContext.cacheDir
-
-    // Map to store coroutine job for each ViewHolder
-    private val jobMap: MutableMap<Int, Job?> = mutableMapOf()
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -54,8 +48,6 @@ class ImageAdapter(
             val imageUrl =
                 "${model.thumbnail.domain}/${model.thumbnail.basePath}/0/${model.thumbnail.key}"
             holder.apply {
-                // Cancel previous coroutine job if it exists
-                jobMap[adapterPosition]?.cancel()
 
                 // Check if image is already loaded and cached
                 if (model.localImage != null) {
@@ -63,24 +55,8 @@ class ImageAdapter(
                     return
                 }
 
-                val job = lifecycleCoroutineScope.launch(Dispatchers.IO) {
-                    val bitmap = loadImage(imageUrl, viewBinding.imgItem)
-                    bitmap?.let {
-                        // Cache loaded image
-                        model.localImage = it
+                model.job = launchJob(model, imageUrl)
 
-                        // Update UI on main thread
-                        withContext(Dispatchers.Main) {
-                            // Check if ViewHolder is still bound to the same URL
-                            if (adapterPosition != RecyclerView.NO_POSITION) {
-                                viewBinding.imgItem.setImageBitmap(it)
-                            }
-                        }
-                    }
-                }
-
-                // Store coroutine job in map
-                jobMap[adapterPosition] = job
             }
 
             holder.itemView.setOnClickListener {
@@ -107,12 +83,31 @@ class ImageAdapter(
         }
         return null
     }
+
     override fun getItemCount(): Int {
         return mList.size
     }
 
     inner class ViewHolder(val viewBinding: RawImageListBinding) :
-        RecyclerView.ViewHolder(viewBinding.root)
+        RecyclerView.ViewHolder(viewBinding.root) {
+
+        fun launchJob(model: ImageModel.ImageModelData, imageUrl: String): Job =
+            lifecycleCoroutineScope.launch(Dispatchers.IO) {
+                val bitmap = loadImage(imageUrl, viewBinding.imgItem)
+                bitmap?.let {
+                    // Cache loaded image
+                    model.localImage = it
+
+                    // Update UI on main thread
+                    withContext(Dispatchers.Main) {
+                        // Check if ViewHolder is still bound to the same URL
+                        if (adapterPosition != RecyclerView.NO_POSITION) {
+                            viewBinding.imgItem.setImageBitmap(it)
+                        }
+                    }
+                }
+            }
+    }
 
     interface ViewHolderClicks {
         fun onClickItem(model: ImageModel.ImageModelData, position: Int)
